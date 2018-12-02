@@ -30,7 +30,7 @@ import (
 
 	dto "github.com/prometheus/client_model/go"
 
-	"github.com/prometheus/client_golang/prometheus/internal"
+	"github.com/70data/golang-prometheus/prometheus/internal"
 )
 
 const (
