@@ -1,12 +1,19 @@
-module github.com/prometheus/client_golang
+module github.com/70data/prometheus-golang
+
+go 1.11
 
 require (
-	github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973
-	github.com/golang/protobuf v1.2.0
-	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
-	github.com/prometheus/client_model v0.0.0-20180712105110-5c3871d89910
-	github.com/prometheus/common v0.0.0-20181113130724-41aa239b4cce
-	github.com/prometheus/procfs v0.0.0-20181005140218-185b4288413d
-	golang.org/x/net v0.0.0-20181114220301-adae6a3d119a
-	golang.org/x/sync v0.0.0-20181108010431-42b317875d0f // indirect
+	github.com/beorn7/perks v1.0.1
+	github.com/cespare/xxhash/v2 v2.1.1
+	github.com/golang/protobuf v1.4.0
+	github.com/json-iterator/go v1.1.9
+	github.com/kr/pretty v0.1.0 // indirect
+	github.com/prometheus/client_golang v1.0.0
+	github.com/prometheus/client_model v0.2.0
+	github.com/prometheus/common v0.9.1
+	github.com/prometheus/procfs v0.0.11
+	github.com/stretchr/testify v1.4.0 // indirect
+	golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f
+	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
+	gopkg.in/yaml.v2 v2.2.5 // indirect
 )
