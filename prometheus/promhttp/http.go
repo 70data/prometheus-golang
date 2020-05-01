@@ -40,6 +40,7 @@ import (
 	"sync"
 	"time"
 
+	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
 
 	"github.com/70data/prometheus-golang/prometheus"
@@ -63,6 +64,15 @@ var gzipPool = sync.Pool{
 	},
 }
 
+func CustomCollector(customCollector DefaultCollector) {
+	if customCollector.ProcessCollector {
+		prometheus.MustRegister(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
+	}
+	if customCollector.GoCollector {
+		prometheus.MustRegister(prometheus.NewGoCollector())
+	}
+}
+
 // Handler returns an http.Handler for the prometheus.DefaultGatherer, using
 // default HandlerOpts, i.e. it reports the first error as an HTTP error, it has
 // no error logging, and it applies compression if requested by the client.
@@ -78,14 +88,8 @@ var gzipPool = sync.Pool{
 // Gatherer, different instrumentation, and non-default HandlerOpts), use the
 // HandlerFor function. See there for details.
 func Handler(customCollector DefaultCollector) http.Handler {
-	if customCollector.ProcessCollector {
-		prometheus.MustRegister(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
-	}
-	if customCollector.GoCollector {
-		prometheus.MustRegister(prometheus.NewGoCollector())
-	}
 	return InstrumentMetricHandler(
-		prometheus.DefaultRegisterer, HandlerFor(prometheus.DefaultGatherer, HandlerOpts{}),
+		prometheus.DefaultRegisterer, HandlerFor(customCollector, prometheus.DefaultGatherer, HandlerOpts{}),
 	)
 }
 
@@ -95,7 +99,10 @@ func Handler(customCollector DefaultCollector) http.Handler {
 // Gatherers, with non-default HandlerOpts, and/or with custom (or no)
 // instrumentation. Use the InstrumentMetricHandler function to apply the same
 // kind of instrumentation as it is used by the Handler function.
-func HandlerFor(reg prometheus.Gatherer, opts HandlerOpts) http.Handler {
+func HandlerFor(customCollector DefaultCollector, reg prometheus.Gatherer, opts HandlerOpts) http.Handler {
+
+	CustomCollector(customCollector)
+
 	var (
 		inFlightSem chan struct{}
 		errCnt      = prometheus.NewCounterVec(
@@ -362,6 +369,10 @@ type HandlerOpts struct {
 	// (which changes the identity of the resulting series on the Prometheus
 	// server).
 	EnableOpenMetrics bool
+}
+
+func (h HandlerOpts) Gather() ([]*dto.MetricFamily, error) {
+	panic("implement me")
 }
 
 // gzipAccepted returns whether the client will accept gzip-encoded content.
